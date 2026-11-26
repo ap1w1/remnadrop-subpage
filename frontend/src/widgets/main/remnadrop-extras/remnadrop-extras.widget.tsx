@@ -1,4 +1,4 @@
-import { IconBrandTelegram, IconExternalLink, IconHeadset, IconWorld } from '@tabler/icons-react'
+import { IconBrandTelegram, IconHeadset, IconWorld } from '@tabler/icons-react'
 import { Box } from '@mantine/core'
 
 import { useSubscription } from '@entities/subscription-info-store'
@@ -40,7 +40,7 @@ export function RemnadropExtrasWidget() {
 
     return <nav className={classes.links} aria-label={labels.links}>
         {links.map(({ key, label, Icon, href }) => <Box component="a" href={href} key={key} className={classes.link} rel="noopener noreferrer" target="_blank">
-            <Icon size={17} /><span>{label}</span><IconExternalLink size={13} className={classes.external} />
+            <Icon size={17} /><span>{label}</span>
         </Box>)}
     </nav>
 }

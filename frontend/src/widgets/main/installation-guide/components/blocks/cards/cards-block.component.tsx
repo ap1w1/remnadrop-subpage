@@ -1,69 +1,45 @@
-import { Card, Group, Stack, Text, Title } from '@mantine/core'
-
-import { getColorGradient, getLocalizedText } from '@shared/utils/config-parser'
-import { ThemeIconShared } from '@shared/ui'
+import { getLocalizedText } from '@shared/utils/config-parser'
+import { useState } from 'react'
 
 import { IBlockRendererProps } from '../renderer-block.interface'
 import classes from './cards-block.module.css'
 
 export const CardsBlockRenderer = ({
     blocks,
-    isMobile,
     currentLang,
-    renderBlockButtons,
-    getIconFromLibrary
+    renderBlockButtons
 }: IBlockRendererProps) => {
-    return (
-        <Stack gap="sm">
-            {blocks.map((block, index) => {
-                const gradientStyle = getColorGradient(block.svgIconColor)
+    const [openSteps, setOpenSteps] = useState<number[]>([0, 1])
 
-                return (
-                    <Card
-                        className={classes.root}
-                        key={index}
-                        p={{ base: 'sm', xs: 'md', sm: 'lg' }}
-                        radius="lg"
-                    >
-                        <Group align="flex-start" gap={isMobile ? 'sm' : 'md'} wrap="nowrap">
-                            <ThemeIconShared
-                                getIconFromLibrary={getIconFromLibrary}
-                                gradientStyle={gradientStyle}
-                                isMobile={isMobile}
-                                svgIconColor={block.svgIconColor}
-                                svgIconKey={block.svgIconKey}
-                            />
-                            <Stack gap={isMobile ? 'xs' : 'sm'} style={{ flex: 1, minWidth: 0 }}>
-                                <Title
-                                    c="white"
-                                    fw={600}
-                                    order={6}
-                                    style={{ wordBreak: 'break-word' }}
-                                >
-                                    <span
-                                        dangerouslySetInnerHTML={{
-                                            __html: getLocalizedText(block.title, currentLang)
-                                        }}
-                                    />
-                                </Title>
-
-                                <Text
-                                    size={isMobile ? 'xs' : 'sm'}
-                                    style={{ whiteSpace: 'pre-line', lineHeight: 1.6 }}
-                                >
-                                    <span
-                                        dangerouslySetInnerHTML={{
-                                            __html: getLocalizedText(block.description, currentLang)
-                                        }}
-                                    />
-                                </Text>
-
-                                {renderBlockButtons(block.buttons, 'light')}
-                            </Stack>
-                        </Group>
-                    </Card>
-                )
-            })}
-        </Stack>
-    )
+    return <div className={classes.steps}>
+        {blocks.map((block, index) => (
+            <details
+                className={classes.step}
+                key={index}
+                onToggle={(event) => {
+                    const opened = event.currentTarget.open
+                    setOpenSteps((current) => opened
+                        ? current.includes(index) ? current : [...current, index]
+                        : current.filter((item) => item !== index))
+                }}
+                open={openSteps.includes(index)}
+            >
+                <summary className={classes.summary}>
+                    <span className={classes.number}>{String(index + 1).padStart(2, '0')}</span>
+                    <span
+                        className={classes.title}
+                        dangerouslySetInnerHTML={{ __html: getLocalizedText(block.title, currentLang) }}
+                    />
+                    <span aria-hidden="true" className={classes.chevron} />
+                </summary>
+                <div className={classes.content}>
+                    <div
+                        className={classes.description}
+                        dangerouslySetInnerHTML={{ __html: getLocalizedText(block.description, currentLang) }}
+                    />
+                    {renderBlockButtons(block.buttons, 'light')}
+                </div>
+            </details>
+        ))}
+    </div>
 }

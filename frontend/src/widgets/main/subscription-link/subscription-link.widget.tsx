@@ -87,7 +87,7 @@ export const SubscriptionLinkWidget = ({ hideGetLink, mode = 'hero' }: IProps) =
     if (hideGetLink) return null
 
     if (mode === 'icon') return <Group gap={6} wrap="nowrap">
-        <ActionIcon aria-label={t(baseTranslations.copyLink)} className={classes.primaryAction} onClick={handleCopy} radius="md" size={40}><IconCopy size={18} /></ActionIcon>
+        <ActionIcon aria-label={t(baseTranslations.copyLink)} className={classes.secondaryAction} onClick={handleCopy} radius="md" size={40} variant="default"><IconCopy size={18} /></ActionIcon>
         <ActionIcon aria-label={t(baseTranslations.getLink)} className={classes.secondaryAction} onClick={handleGetLink} radius="md" size={40} variant="default"><IconQrcode size={18} /></ActionIcon>
     </Group>
 

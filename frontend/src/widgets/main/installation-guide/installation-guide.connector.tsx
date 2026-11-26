@@ -139,6 +139,7 @@ export const InstallationGuideConnector = (props: IProps) => {
                         }
                         onClick={() => handleButtonClick(button)}
                         radius="md"
+                        size="xs"
                         variant={variant}
                     >
                         {t(button.text)}
@@ -151,7 +152,7 @@ export const InstallationGuideConnector = (props: IProps) => {
     const getIcon = (iconKey: string) => getIconFromLibrary(iconKey, svgLibrary)
 
     return (
-        <Card p={{ base: 'sm', xs: 'md', sm: 'lg', md: 'xl' }} radius="lg">
+        <Card p={{ base: 'md', sm: 'lg' }} radius="lg">
             <Stack gap="md">
                 <Group gap="sm" justify="space-between">
                     <Title c="white" fw={600} order={4}>
@@ -203,6 +204,7 @@ export const InstallationGuideConnector = (props: IProps) => {
 
                                 return (
                                     <UnstyledButton
+                                        aria-pressed={isActive}
                                         className={clsx(
                                             classes.appButton,
                                             isActive && classes.appButtonActive,

@@ -12,11 +12,11 @@ import classes from './remnadrop-overview.module.css'
 type Variant = 'cards' | 'collapsed' | 'expanded'
 
 const copy = {
-    ru: { heading: 'Ваша подписка', active: 'Активна', inactive: 'Недоступна', expires: 'Действует до', used: 'Использовано', remaining: 'Осталось', unlimited: 'Без лимита', renew: 'Продлить подписку' },
-    en: { heading: 'Your subscription', active: 'Active', inactive: 'Unavailable', expires: 'Valid until', used: 'Used', remaining: 'Remaining', unlimited: 'Unlimited', renew: 'Renew subscription' },
-    fr: { heading: 'Votre abonnement', active: 'Actif', inactive: 'Indisponible', expires: 'Valable jusqu’au', used: 'Utilisé', remaining: 'Restant', unlimited: 'Illimité', renew: 'Renouveler' },
-    zh: { heading: '您的订阅', active: '有效', inactive: '不可用', expires: '有效期至', used: '已使用', remaining: '剩余', unlimited: '无限制', renew: '续订' },
-    fa: { heading: 'اشتراک شما', active: 'فعال', inactive: 'غیرفعال', expires: 'معتبر تا', used: 'مصرف‌شده', remaining: 'باقی‌مانده', unlimited: 'نامحدود', renew: 'تمدید اشتراک' }
+    ru: { heading: 'Ваша подписка', active: 'Активна', inactive: 'Недоступна', expires: 'Действует до', used: 'Использовано', remaining: 'Осталось', unlimited: 'Без лимита', renew: 'Продлить подписку', renewShort: 'Продлить' },
+    en: { heading: 'Your subscription', active: 'Active', inactive: 'Unavailable', expires: 'Valid until', used: 'Used', remaining: 'Remaining', unlimited: 'Unlimited', renew: 'Renew subscription', renewShort: 'Renew' },
+    fr: { heading: 'Votre abonnement', active: 'Actif', inactive: 'Indisponible', expires: 'Valable jusqu’au', used: 'Utilisé', remaining: 'Restant', unlimited: 'Illimité', renew: 'Renouveler', renewShort: 'Renouveler' },
+    zh: { heading: '您的订阅', active: '有效', inactive: '不可用', expires: '有效期至', used: '已使用', remaining: '剩余', unlimited: '无限制', renew: '续订', renewShort: '续订' },
+    fa: { heading: 'اشتراک شما', active: 'فعال', inactive: 'غیرفعال', expires: 'معتبر تا', used: 'مصرف‌شده', remaining: 'باقی‌مانده', unlimited: 'نامحدود', renew: 'تمدید اشتراک', renewShort: 'تمدید' }
 } as const
 
 function formatBytes(value: number, locale: string): string {
@@ -76,8 +76,8 @@ export function RemnadropOverviewWidget({ variant, hideGetLink }: Props) {
         </div>}
 
         {(!hideGetLink || renewUrl) && <div className={classes.actions}>
-            <SubscriptionLinkWidget hideGetLink={hideGetLink} mode="hero" />
-            {renewUrl && <a className={classes.renew} href={renewUrl} rel="noopener noreferrer" target="_blank"><IconCreditCard size={18} />{labels.renew}</a>}
+            {renewUrl && <a aria-label={labels.renew} className={classes.renew} href={renewUrl} rel="noopener noreferrer" target="_blank"><IconCreditCard size={18} /><span className={classes.renewLong}>{labels.renew}</span><span className={classes.renewShort}>{labels.renewShort}</span></a>}
+            <SubscriptionLinkWidget hideGetLink={hideGetLink} mode={renewUrl ? 'icon' : 'hero'} />
         </div>}
     </section>
 }
