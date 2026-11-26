@@ -2,7 +2,7 @@ import { Accordion, Group, Stack, Text } from '@mantine/core'
 import { IconChevronDown } from '@tabler/icons-react'
 import { useState } from 'react'
 
-import { getColorGradient, getLocalizedText } from '@shared/utils/config-parser'
+import { getLocalizedText } from '@shared/utils/config-parser'
 import { vibrate } from '@shared/utils/vibrate'
 import { ThemeIconShared } from '@shared/ui'
 
@@ -38,17 +38,13 @@ export const AccordionBlockRenderer = ({
             variant="separated"
         >
             {blocks.map((block, index) => {
-                const gradientStyle = getColorGradient(block.svgIconColor)
-
                 return (
                     <Accordion.Item key={index} value={String(index)}>
                         <Accordion.Control>
                             <Group gap="sm" wrap="nowrap">
                                 <ThemeIconShared
                                     getIconFromLibrary={getIconFromLibrary}
-                                    gradientStyle={gradientStyle}
                                     isMobile={isMobile}
-                                    svgIconColor={block.svgIconColor}
                                     svgIconKey={block.svgIconKey}
                                 />
                                 <Stack gap={2} style={{ flex: 1, minWidth: 0 }}>

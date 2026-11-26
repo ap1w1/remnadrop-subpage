@@ -1,6 +1,6 @@
 import { Stack, Text, Timeline } from '@mantine/core'
 
-import { getColorGradientSolid, getLocalizedText } from '@shared/utils/config-parser'
+import { getLocalizedText } from '@shared/utils/config-parser'
 import { ThemeIconShared } from '@shared/ui'
 
 import { IBlockRendererProps } from '../renderer-block.interface'
@@ -26,16 +26,12 @@ export const TimelineBlockRenderer = ({
             lineWidth={2}
         >
             {blocks.map((block, index) => {
-                const gradientStyle = getColorGradientSolid(block.svgIconColor)
-
                 return (
                     <Timeline.Item
                         bullet={
                             <ThemeIconShared
                                 getIconFromLibrary={getIconFromLibrary}
-                                gradientStyle={gradientStyle}
                                 isMobile={isMobile}
-                                svgIconColor={block.svgIconColor}
                                 svgIconKey={block.svgIconKey}
                             />
                         }

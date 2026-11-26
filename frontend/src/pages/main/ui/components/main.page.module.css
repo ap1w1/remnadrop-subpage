@@ -6,9 +6,9 @@
 
 .header {
     position: relative;
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
     gap: 24px;
     min-height: 112px;
     padding: 22px 26px;
@@ -50,8 +50,10 @@
 
 .brand {
     position: relative;
+    grid-column: 2;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 18px;
     min-width: 0;
     user-select: none;
@@ -80,17 +82,7 @@
 
 .brandCopy {
     display: grid;
-    gap: 3px;
     min-width: 0;
-}
-
-.brandCaption {
-    color: var(--page-accent, #22c7d9);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.13em;
-    line-height: 1.2;
-    text-transform: uppercase;
 }
 
 .brandName {
@@ -111,8 +103,10 @@
 
 .headerActions {
     position: relative;
+    grid-column: 3;
     display: flex;
     align-items: center;
+    justify-self: end;
     gap: 8px;
     flex: none;
 }
@@ -137,10 +131,6 @@
         width: 48px;
         height: 48px;
         box-shadow: 0 0 0 3px color-mix(in srgb, var(--page-accent, #22c7d9) 8%, transparent);
-    }
-
-    .brandCaption {
-        font-size: 9px;
     }
 
     .brandName {

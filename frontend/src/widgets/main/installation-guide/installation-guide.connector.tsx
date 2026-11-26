@@ -3,11 +3,11 @@ import {
     IconBrandApple,
     IconBrandUbuntu,
     IconBrandWindows,
-    IconCheck,
     IconCopy,
     IconDeviceTv,
     IconDownload,
-    IconPlus
+    IconPlus,
+    IconStarFilled
 } from '@tabler/icons-react'
 import {
     TSubscriptionPageAppConfig,
@@ -113,6 +113,11 @@ export const InstallationGuideConnector = (props: IProps) => {
 
     const platformApps = platforms[selectedPlatform]!.apps
     const selectedApp = platformApps[selectedAppIndex] ?? platformApps[0]
+    const iosInstallButtons = selectedPlatform === 'ios'
+        ? (selectedApp?.blocks.find((block) =>
+            block.buttons.some((button) => button.type === 'external')
+        ) ?? selectedApp?.blocks[0])?.buttons
+        : undefined
 
     const availablePlatforms = (
         Object.entries(hasPlatformApps) as [TSubscriptionPagePlatformKey, boolean][]
@@ -172,31 +177,34 @@ export const InstallationGuideConnector = (props: IProps) => {
         if (buttons.length === 0) return null
 
         return (
-            <div className={classes.actionGrid}>
-                {buttons.map((button, index) => {
-                    let ActionIcon = IconDownload
-                    if (button.type === 'copyButton') ActionIcon = IconCopy
-                    else if (button.type === 'subscriptionLink') ActionIcon = IconPlus
-                    else if (button.link.includes('apps.apple.com')) ActionIcon = IconBrandApple
+            <>
+                <div className={classes.actionGrid}>
+                    {buttons.map((button, index) => {
+                        let ActionIcon = IconDownload
+                        if (button.type === 'copyButton') ActionIcon = IconCopy
+                        else if (button.type === 'subscriptionLink') ActionIcon = IconPlus
+                        else if (button.link.includes('apps.apple.com')) ActionIcon = IconBrandApple
 
-                    return (
-                        <Button
-                            className={clsx(
-                                classes.actionButton,
-                                button.type === 'subscriptionLink' && classes.actionButtonPrimary
-                            )}
-                            key={`${button.type}-${index}`}
-                            leftSection={<ActionIcon size={18} stroke={1.8} />}
-                            onClick={() => handleButtonClick(button)}
-                            radius="md"
-                            size="sm"
-                            variant={button.type === 'subscriptionLink' ? 'filled' : 'default'}
-                        >
-                            {t(button.text)}
-                        </Button>
-                    )
-                })}
-            </div>
+                        return (
+                            <Button
+                                className={clsx(
+                                    classes.actionButton,
+                                    button.type === 'subscriptionLink' && classes.actionButtonPrimary
+                                )}
+                                key={`${button.type}-${index}`}
+                                leftSection={<ActionIcon size={18} stroke={1.8} />}
+                                onClick={() => handleButtonClick(button)}
+                                radius="md"
+                                size="sm"
+                                variant={button.type === 'subscriptionLink' ? 'filled' : 'default'}
+                            >
+                                {t(button.text)}
+                            </Button>
+                        )
+                    })}
+                </div>
+                {buttons === iosInstallButtons && <IosRegionHelp language={currentLang} />}
+            </>
         )
     }
 
@@ -283,7 +291,7 @@ export const InstallationGuideConnector = (props: IProps) => {
                                                 className={classes.featuredBadge}
                                                 title={labels.featured}
                                             >
-                                                <IconCheck size={12} stroke={3} />
+                                                <IconStarFilled size={10} />
                                             </span>
                                         )}
                                     </UnstyledButton>
@@ -304,8 +312,6 @@ export const InstallationGuideConnector = (props: IProps) => {
                             />
                         </div>
                     )}
-
-                    {selectedPlatform === 'ios' && <IosRegionHelp language={currentLang} />}
                 </div>
             )}
         </Card>

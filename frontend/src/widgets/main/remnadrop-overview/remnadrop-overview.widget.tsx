@@ -55,7 +55,7 @@ export function RemnadropOverviewWidget({ variant, hideGetLink }: Props) {
         <div className={classes.headingRow}>
             <div>
                 <div className={classes.eyebrow}><IconWifi size={16} />{labels.heading}</div>
-                <h1 className={classes.username}>{user.username}</h1>
+                <h1 className={classes.username}>№ {user.username}</h1>
             </div>
             <Badge className={classes.status} variant="light" color={active ? 'teal' : 'red'} leftSection={active ? <IconCircleCheck size={14} /> : <IconCircleX size={14} />}>
                 {active ? labels.active : labels.inactive}

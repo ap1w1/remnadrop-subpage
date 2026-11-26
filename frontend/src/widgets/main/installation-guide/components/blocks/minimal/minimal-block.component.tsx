@@ -1,6 +1,6 @@
 import { Box, Group, Stack, Text } from '@mantine/core'
 
-import { getColorGradient, getLocalizedText } from '@shared/utils/config-parser'
+import { getLocalizedText } from '@shared/utils/config-parser'
 import { ThemeIconShared } from '@shared/ui'
 
 import { IBlockRendererProps } from '../renderer-block.interface'
@@ -16,16 +16,12 @@ export const MinimalBlockRenderer = ({
     return (
         <Stack gap="md">
             {blocks.map((block, index) => {
-                const gradientStyle = getColorGradient(block.svgIconColor)
-
                 return (
                     <Box className={classes.stepBlock} key={index}>
                         <Group gap="sm" mb="xs" wrap="nowrap">
                             <ThemeIconShared
                                 getIconFromLibrary={getIconFromLibrary}
-                                gradientStyle={gradientStyle}
                                 isMobile={isMobile}
-                                svgIconColor={block.svgIconColor}
                                 svgIconKey={block.svgIconKey}
                             />
                             <Text

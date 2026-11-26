@@ -60,17 +60,6 @@ export const MainPageComponent = ({ isMobile, platform }: IMainPageComponentProp
 
     const atLeastOnePlatformApp = Object.values(hasPlatformApps).some((value) => value)
 
-    const brandCaption =
-        (
-            {
-                ru: 'Личный доступ',
-                en: 'Your private access',
-                fr: 'Votre accès privé',
-                zh: '专属访问',
-                fa: 'دسترسی شخصی'
-            } as Record<string, string>
-        )[currentLang] ?? 'Your private access'
-
     return (
         <Page>
             <Box className={classes.headerOuter}>
@@ -91,7 +80,6 @@ export const MainPageComponent = ({ isMobile, platform }: IMainPageComponentProp
                                 )}
                             </span>
                             <span className={classes.brandCopy}>
-                                <span className={classes.brandCaption}>{brandCaption}</span>
                                 <span className={classes.brandName}>{brandName}</span>
                             </span>
                         </div>
