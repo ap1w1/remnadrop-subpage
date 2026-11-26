@@ -1,6 +1,7 @@
 services:
   remnawave-subscription-page:
     image: remnadrop/subpage:latest
+    build: .
     container_name: remnawave-subscription-page
     hostname: remnawave-subscription-page
     restart: always

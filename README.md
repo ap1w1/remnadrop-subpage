@@ -26,8 +26,7 @@ cp .env.sample .env
 В `.env` укажите адрес панели `REMNAWAVE_PANEL_URL`, действующий `REMNAWAVE_API_TOKEN` и остальные параметры вашей установки. Не публикуйте `.env`. Если Subpage уже установлен через `remnawave-scripts`, используйте его действующий `.env`, сеть и reverse proxy; в его compose-файле замените только имя образа на `remnadrop/subpage:latest`.
 
 ```bash
-docker build -t remnadrop/subpage:latest .
-docker compose -f docker-compose-prod.yml up -d --no-deps remnawave-subscription-page
+docker compose -f docker-compose-prod.yml up -d --build --no-deps remnawave-subscription-page
 docker compose -f docker-compose-prod.yml ps remnawave-subscription-page
 ```
 
@@ -46,8 +45,7 @@ Compose-файл предполагает существующую внешню�
 ```bash
 cd /opt/remnadrop-subpage
 git pull --ff-only
-docker build -t remnadrop/subpage:latest .
-docker compose -f docker-compose-prod.yml up -d --no-deps remnawave-subscription-page
+docker compose -f docker-compose-prod.yml up -d --build --no-deps remnawave-subscription-page
 ```
 
 ## Связь с панелью
