@@ -1,11 +1,11 @@
 process.title = 'rw-subpage';
 
 import { utilities as nestWinstonModuleUtilities, WinstonModule } from 'nest-winston';
+import { json, NextFunction, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import { createLogger } from 'winston';
 import compression from 'compression';
 import * as winston from 'winston';
-import { json } from 'express';
 import path from 'node:path';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -91,15 +91,37 @@ async function bootstrap(): Promise<void> {
     app.engine('html', ejs.renderFile);
     app.setViewEngine('html');
 
-    app.use(json({ limit: '100mb' }));
+    app.use(json({ limit: '16kb' }));
 
-    app.use(helmet({ contentSecurityPolicy: false }));
+    app.use(helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                baseUri: ["'none'"],
+                connectSrc: ["'self'"],
+                fontSrc: ["'self'", 'data:', 'https:'],
+                formAction: ["'self'"],
+                frameAncestors: ["'none'"],
+                imgSrc: ["'self'", 'data:', 'https:'],
+                objectSrc: ["'none'"],
+                scriptSrc: ["'self'"],
+                styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
+            },
+        },
+        referrerPolicy: { policy: 'no-referrer' },
+    }));
+    app.use((req: Request, res: Response, next: NextFunction) => {
+        if (req.path !== '/assets' && !req.path.startsWith('/assets/')) {
+            res.setHeader('Cache-Control', 'private, no-store');
+        }
+        next();
+    });
 
     app.use(compression());
 
     app.use(
         morgan(
-            ':remote-addr - ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
+            ':remote-addr - ":method [subscription] HTTP/:http-version" :status :res[content-length]',
             {
                 skip: (req) => req?.url?.startsWith('/assets') ?? false,
             },
@@ -115,12 +137,6 @@ async function bootstrap(): Promise<void> {
     } else {
         logger.info('[CONFIG] CUSTOM_SUB_PREFIX: not set');
     }
-
-    app.enableCors({
-        origin: '*',
-        methods: 'GET',
-        credentials: false,
-    });
 
     app.enableShutdownHooks();
 

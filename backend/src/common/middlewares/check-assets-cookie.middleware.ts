@@ -30,7 +30,10 @@ export function checkAssetsCookieMiddleware(
         }
 
         try {
-            const jwtPayload = jwt.verify(req.cookies.session, secret);
+            const jwtPayload = jwt.verify(req.cookies.session, secret, { algorithms: ['HS256'] });
+            if (typeof jwtPayload !== 'object' || typeof jwtPayload.su !== 'string' || typeof jwtPayload.sessionId !== 'string') {
+                throw new Error('Invalid session payload');
+            }
 
             req.user = jwtPayload as unknown as IJwtPayload;
         } catch (error) {

@@ -24,9 +24,9 @@ import {
 } from '@remnawave/backend-contract';
 
 import { TypedConfigService } from '@common/config/app-config';
-import { IGNORED_HEADERS } from '@common/constants';
 
 import { ICommandResponse } from '../types/command-response.type';
+import { getSafeClientHeaders } from './subscription-headers';
 
 @Injectable()
 export class AxiosService implements OnModuleInit {
@@ -39,6 +39,7 @@ export class AxiosService implements OnModuleInit {
         this.axiosInstance = axios.create({
             baseURL: this.configService.getOrThrow('REMNAWAVE_PANEL_URL'),
             timeout: 10_000,
+            maxRedirects: 0,
             headers: {
                 'user-agent': 'Remnawave Subscription Page',
                 'x-subpage-version': this.subpageVersion,
@@ -192,7 +193,7 @@ export class AxiosService implements OnModuleInit {
                 response: response.data.response,
             };
         } catch (error) {
-            this.logger.error('Error in GetSubscriptionPageConfigByUuid Request:', error);
+            this.logger.error('Error in GetSubscriptionPageConfigByUuid Request:', error instanceof Error ? error.message : 'Unknown error');
 
             return { isOk: false };
         }
@@ -273,7 +274,7 @@ export class AxiosService implements OnModuleInit {
                     method: GetSubpageConfigByShortUuidCommand.endpointDetails.REQUEST_METHOD,
                     url: GetSubpageConfigByShortUuidCommand.url(encodeURIComponent(shortUuid)),
                     data: {
-                        requestHeaders,
+                        requestHeaders: getSafeClientHeaders(requestHeaders),
                     },
                 });
 
@@ -282,7 +283,7 @@ export class AxiosService implements OnModuleInit {
                 response: response.data.response,
             };
         } catch (error) {
-            this.logger.error('Error in GetSubpageConfig Request:', error);
+            this.logger.error('Error in GetSubpageConfig Request:', error instanceof Error ? error.message : 'Unknown error');
             return { isOk: false };
         }
     }
@@ -290,7 +291,7 @@ export class AxiosService implements OnModuleInit {
     public async getSubscription(
         clientIp: string,
         shortUuid: string,
-        headers: NodeJS.Dict<string | string[]>,
+        headers: IncomingHttpHeaders,
         withClientType: boolean = false,
         clientType?: TRequestTemplateTypeKeys,
     ): Promise<{
@@ -304,9 +305,7 @@ export class AxiosService implements OnModuleInit {
                 basePath += '/' + encodeURIComponent(clientType);
             }
 
-            const safeHeaders = Object.fromEntries(
-                Object.entries(headers).filter(([key]) => !IGNORED_HEADERS.has(key.toLowerCase())),
-            );
+            const safeHeaders = getSafeClientHeaders(headers);
 
             const response = await this.axiosInstance.request<unknown>({
                 method: 'GET',

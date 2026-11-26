@@ -1,5 +1,6 @@
 import { Box, Group, Stack, Text } from '@mantine/core'
 
+import { sanitizeRichText } from '@shared/utils/sanitize-markup'
 import { getLocalizedText } from '@shared/utils/config-parser'
 import { ThemeIconShared } from '@shared/ui'
 
@@ -27,7 +28,7 @@ export const MinimalBlockRenderer = ({
                             <Text
                                 c="white"
                                 dangerouslySetInnerHTML={{
-                                    __html: getLocalizedText(block.title, currentLang)
+                                    __html: sanitizeRichText(getLocalizedText(block.title, currentLang))
                                 }}
                                 fw={500}
                                 size={isMobile ? 'sm' : 'md'}
@@ -36,7 +37,7 @@ export const MinimalBlockRenderer = ({
                         <Text
                             c="dimmed"
                             dangerouslySetInnerHTML={{
-                                __html: getLocalizedText(block.description, currentLang)
+                                __html: sanitizeRichText(getLocalizedText(block.description, currentLang))
                             }}
                             size={isMobile ? 'xs' : 'sm'}
                             style={{ lineHeight: 1.6 }}

@@ -24,6 +24,8 @@ import { constructSubscriptionUrl } from '@shared/utils/construct-subscription-u
 import { useSubscription } from '@entities/subscription-info-store'
 import { getIconFromLibrary } from '@shared/utils/config-parser'
 import { TemplateEngine } from '@shared/utils/template-engine'
+import { getSafeOpenUrl } from '@shared/utils/safe-open-url'
+import { sanitizeSvg } from '@shared/utils/sanitize-markup'
 import { useAppConfig } from '@entities/app-config-store'
 import { vibrate } from '@shared/utils/vibrate'
 import { useTranslation } from '@shared/hooks'
@@ -156,13 +158,15 @@ export const InstallationGuideConnector = (props: IProps) => {
                 break
             }
             case 'external': {
-                window.open(button.link, '_blank', 'noopener,noreferrer')
+                const safeUrl = getSafeOpenUrl(button.link)
+                if (safeUrl) window.open(safeUrl, '_blank', 'noopener,noreferrer')
                 break
             }
             case 'subscriptionLink': {
                 if (!formattedUrl) return
 
-                window.open(formattedUrl, '_blank', 'noopener,noreferrer')
+                const safeUrl = getSafeOpenUrl(formattedUrl, true)
+                if (safeUrl) window.open(safeUrl, '_blank', 'noopener,noreferrer')
                 break
             }
             default:
@@ -208,7 +212,7 @@ export const InstallationGuideConnector = (props: IProps) => {
         )
     }
 
-    const getIcon = (iconKey: string) => getIconFromLibrary(iconKey, svgLibrary)
+    const getIcon = (iconKey: string) => sanitizeSvg(getIconFromLibrary(iconKey, svgLibrary))
 
     return (
         <Card className={classes.guide} p={0} radius="lg">
@@ -262,7 +266,7 @@ export const InstallationGuideConnector = (props: IProps) => {
                             {platformApps.map((app: TSubscriptionPageAppConfig, index: number) => {
                                 const isActive = index === selectedAppIndex
                                 const iconMarkup = app.svgIconKey
-                                    ? svgLibrary[app.svgIconKey]
+                                    ? sanitizeSvg(svgLibrary[app.svgIconKey] ?? '')
                                     : undefined
                                 const appVisual = iconMarkup ? (
                                     <span dangerouslySetInnerHTML={{ __html: iconMarkup }} />

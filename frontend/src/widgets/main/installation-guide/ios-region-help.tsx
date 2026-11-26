@@ -124,7 +124,7 @@ export function IosRegionHelp({ language }: { language: string }) {
             />
             <div className={classes.regionContent}>
                 <strong>{text.title}</strong>
-                <p>{text.description}</p>
+                <p className={classes.regionIntro}>{text.description}</p>
                 <details className={classes.regionDetails}>
                     <summary>{text.how}</summary>
                     <ol>

@@ -1,5 +1,6 @@
 import { Stack, Text, Timeline } from '@mantine/core'
 
+import { sanitizeRichText } from '@shared/utils/sanitize-markup'
 import { getLocalizedText } from '@shared/utils/config-parser'
 import { ThemeIconShared } from '@shared/ui'
 
@@ -40,7 +41,7 @@ export const TimelineBlockRenderer = ({
                             <Text
                                 c="white"
                                 dangerouslySetInnerHTML={{
-                                    __html: getLocalizedText(block.title, currentLang)
+                                    __html: sanitizeRichText(getLocalizedText(block.title, currentLang))
                                 }}
                                 fw={600}
                                 size={isMobile ? 'sm' : 'md'}
@@ -51,7 +52,7 @@ export const TimelineBlockRenderer = ({
                             <Text
                                 c="dimmed"
                                 dangerouslySetInnerHTML={{
-                                    __html: getLocalizedText(block.description, currentLang)
+                                    __html: sanitizeRichText(getLocalizedText(block.description, currentLang))
                                 }}
                                 size={isMobile ? 'xs' : 'sm'}
                                 style={{ lineHeight: 1.6 }}

@@ -1,5 +1,5 @@
+import { createHash, timingSafeEqual } from 'node:crypto';
 import { Request, Response } from 'express';
-import { createHash } from 'node:crypto';
 import { nanoid } from 'nanoid';
 
 import { Injectable } from '@nestjs/common';
@@ -8,9 +8,9 @@ import { Logger } from '@nestjs/common';
 
 import { TRequestTemplateTypeKeys } from '@remnawave/backend-contract';
 
+import { SUBSCRIPTION_RESPONSE_HEADERS } from '@common/axios/subscription-headers';
 import { TypedConfigService } from '@common/config/app-config';
 import { AxiosService } from '@common/axios/axios.service';
-import { IGNORED_HEADERS } from '@common/constants';
 import { sanitizeUsername } from '@common/utils';
 
 import { SubpageConfigService } from './subpage-config.service';
@@ -113,7 +113,7 @@ export class RootService {
 
             if (subscriptionDataResponse.headers) {
                 Object.entries(subscriptionDataResponse.headers)
-                    .filter(([key]) => !IGNORED_HEADERS.has(key.toLowerCase()))
+                    .filter(([key]) => SUBSCRIPTION_RESPONSE_HEADERS.has(key.toLowerCase()))
                     .forEach(([key, value]) => {
                         res.setHeader(key, value);
                     });
@@ -122,7 +122,7 @@ export class RootService {
             res.status(200).send(subscriptionDataResponse.response);
             return;
         } catch (error) {
-            this.logger.error('Error in serveSubscriptionPage', error);
+            this.logger.error('Error in serveSubscriptionPage', error instanceof Error ? error.message : 'Unknown error');
 
             res.socket?.destroy();
             return;
@@ -207,13 +207,13 @@ export class RootService {
             );
 
             const subscriptionData = subscriptionDataResponse.response;
-            delete (subscriptionData.response.user as typeof subscriptionData.response.user & {
+            delete (subscriptionData.response.user as {
                 nodeQuotaGroups?: unknown;
-            }).nodeQuotaGroups;
+            } & typeof subscriptionData.response.user).nodeQuotaGroups;
             Object.assign(subscriptionData.response, {
-                pageLinks: (subpageConfig as typeof subpageConfig & {
+                pageLinks: (subpageConfig as {
                     resolvedLinks?: Record<string, string> | null;
-                }).resolvedLinks ?? null,
+                } & typeof subpageConfig).resolvedLinks ?? null,
             });
 
             if (!baseSettings.showConnectionKeys) {
@@ -224,6 +224,7 @@ export class RootService {
             res.cookie('session', this.generateJwtForCookie(subpageConfig.subpageConfigUuid), {
                 httpOnly: true,
                 secure: true,
+                sameSite: 'lax',
                 maxAge: 1_800_000, // 30 minutes
             });
 
@@ -247,10 +248,7 @@ export class RootService {
         if (!this.marzbanSecretKeys.length) return null;
 
         const token = shortUuid;
-        this.logger.debug(`Verifying token: ${token}`);
-
-        if (!token || token.length < 10) {
-            this.logger.debug(`Token too short: ${token}`);
+        if (!token || token.length < 11 || token.length > 2048) {
             return null;
         }
 
@@ -258,7 +256,6 @@ export class RootService {
             const result = await this.decodeMarzbanLink(shortUuid, key);
             if (result) return result;
 
-            this.logger.debug(`Decoding Marzban link failed with key: ${key}`);
         }
 
         this.logger.debug(`Decoding Marzban link failed with all keys`);
@@ -290,7 +287,7 @@ export class RootService {
                     return null;
                 }
 
-                this.logger.debug(`JWT verified successfully, ${JSON.stringify(payload)}`);
+                this.logger.debug('Legacy subscription token verified');
 
                 return {
                     username: payload.sub,
@@ -303,8 +300,6 @@ export class RootService {
 
         const uToken = token.slice(0, token.length - 10);
         const uSignature = token.slice(token.length - 10);
-
-        this.logger.debug(`Token parts: base: ${uToken}, signature: ${uSignature}`);
 
         let decoded: string;
         try {
@@ -320,16 +315,14 @@ export class RootService {
 
         const expectedSignature = Buffer.from(digest).toString('base64url').slice(0, 10);
 
-        this.logger.debug(`Expected signature: ${expectedSignature}, actual: ${uSignature}`);
-
-        if (uSignature !== expectedSignature) {
+        if (!timingSafeEqual(Buffer.from(uSignature), Buffer.from(expectedSignature))) {
             this.logger.debug('Signature mismatch');
             return null;
         }
 
         const parts = decoded.split(',');
         if (parts.length < 2) {
-            this.logger.debug(`Invalid token format: ${decoded}`);
+            this.logger.debug('Invalid legacy subscription token format');
             return null;
         }
 

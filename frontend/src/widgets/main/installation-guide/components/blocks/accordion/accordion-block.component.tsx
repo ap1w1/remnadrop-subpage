@@ -2,6 +2,7 @@ import { Accordion, Group, Stack, Text } from '@mantine/core'
 import { IconChevronDown } from '@tabler/icons-react'
 import { useState } from 'react'
 
+import { sanitizeRichText } from '@shared/utils/sanitize-markup'
 import { getLocalizedText } from '@shared/utils/config-parser'
 import { vibrate } from '@shared/utils/vibrate'
 import { ThemeIconShared } from '@shared/ui'
@@ -51,7 +52,7 @@ export const AccordionBlockRenderer = ({
                                     <Text
                                         c="white"
                                         dangerouslySetInnerHTML={{
-                                            __html: getLocalizedText(block.title, currentLang)
+                                            __html: sanitizeRichText(getLocalizedText(block.title, currentLang))
                                         }}
                                         fw={600}
                                         size={isMobile ? 'sm' : 'md'}
@@ -68,7 +69,7 @@ export const AccordionBlockRenderer = ({
                             <Text
                                 c="dimmed"
                                 dangerouslySetInnerHTML={{
-                                    __html: getLocalizedText(block.description, currentLang)
+                                    __html: sanitizeRichText(getLocalizedText(block.description, currentLang))
                                 }}
                                 size={isMobile ? 'xs' : 'sm'}
                                 style={{ lineHeight: 1.7 }}

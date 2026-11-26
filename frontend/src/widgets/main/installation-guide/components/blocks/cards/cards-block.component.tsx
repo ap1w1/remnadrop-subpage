@@ -1,5 +1,7 @@
-import { getLocalizedText } from '@shared/utils/config-parser'
 import { useState } from 'react'
+
+import { sanitizeRichText } from '@shared/utils/sanitize-markup'
+import { getLocalizedText } from '@shared/utils/config-parser'
 
 import { IBlockRendererProps } from '../renderer-block.interface'
 import classes from './cards-block.module.css'
@@ -18,9 +20,10 @@ export const CardsBlockRenderer = ({
                 key={index}
                 onToggle={(event) => {
                     const opened = event.currentTarget.open
-                    setOpenSteps((current) => opened
-                        ? current.includes(index) ? current : [...current, index]
-                        : current.filter((item) => item !== index))
+                    setOpenSteps((current) => {
+                        if (!opened) return current.filter((item) => item !== index)
+                        return current.includes(index) ? current : [...current, index]
+                    })
                 }}
                 open={openSteps.includes(index)}
             >
@@ -28,14 +31,14 @@ export const CardsBlockRenderer = ({
                     <span className={classes.number}>{String(index + 1).padStart(2, '0')}</span>
                     <span
                         className={classes.title}
-                        dangerouslySetInnerHTML={{ __html: getLocalizedText(block.title, currentLang) }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeRichText(getLocalizedText(block.title, currentLang)) }}
                     />
                     <span aria-hidden="true" className={classes.chevron} />
                 </summary>
                 <div className={classes.content}>
                     <div
                         className={classes.description}
-                        dangerouslySetInnerHTML={{ __html: getLocalizedText(block.description, currentLang) }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeRichText(getLocalizedText(block.description, currentLang)) }}
                     />
                     {renderBlockButtons(block.buttons, 'light')}
                 </div>

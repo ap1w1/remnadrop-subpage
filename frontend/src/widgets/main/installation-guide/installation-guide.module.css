@@ -315,6 +315,10 @@
 }
 
 @media (max-width: 600px) {
+    .regionIntro {
+        display: none;
+    }
+
     .guideTop {
         padding: 20px 17px;
     }
