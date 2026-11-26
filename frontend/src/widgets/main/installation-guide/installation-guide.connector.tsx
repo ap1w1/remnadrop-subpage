@@ -166,7 +166,12 @@ export const InstallationGuideConnector = (props: IProps) => {
                 if (!formattedUrl) return
 
                 const safeUrl = getSafeOpenUrl(formattedUrl, true)
-                if (safeUrl) window.open(safeUrl, '_blank', 'noopener,noreferrer')
+                if (!safeUrl) return
+                if (safeUrl.startsWith('https://') || safeUrl.startsWith('http://')) {
+                    window.open(safeUrl, '_blank', 'noopener,noreferrer')
+                } else {
+                    window.location.assign(safeUrl)
+                }
                 break
             }
             default:

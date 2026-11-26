@@ -1,6 +1,7 @@
 const APP_SCHEMES = new Set([
     'clash:', 'clashmeta:', 'exclave:', 'flclashx:', 'happ:', 'hiddify:',
-    'koala-clash:', 'obtainium:', 'prizrak-box:', 'stash:', 'streisand:',
+    'incy:', 'koala-clash:', 'obtainium:', 'pepper:', 'prizrak-box:',
+    'shadowrocket:', 'stash:', 'streisand:',
     'sub:', 'v2rayng:', 'v2raytun:'
 ])
 
