@@ -1,0 +1,31 @@
+.modalContent {
+    background: rgba(22, 27, 35, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modalHeader {
+    background: transparent;
+}
+
+.modalTitle {
+    font-weight: 600;
+    color: white;
+}
+
+.primaryAction {
+    background: var(--page-accent, #22c7d9);
+    color: var(--page-background, #0d1117);
+    font-weight: 800;
+    min-height: 40px;
+}
+.primaryAction:hover {
+    background: color-mix(in srgb, var(--page-accent, #22c7d9) 80%, white);
+}
+.secondaryAction {
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .12);
+    color: var(--page-text, #e6edf3);
+    min-height: 40px;
+}

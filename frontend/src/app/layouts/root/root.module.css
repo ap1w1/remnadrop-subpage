@@ -1,0 +1,19 @@
+.root {
+    display: flex;
+    flex-grow: 1;
+    min-height: 100vh;
+    background: var(--page-background, #0d1117);
+    color: var(--page-text, #e6edf3);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.main {
+    max-width: 860px;
+    width: 100%;
+    align-self: center;
+}
