@@ -23,7 +23,7 @@ cd /opt/remnadrop-subpage
 cp .env.sample .env
 ```
 
-В `.env` укажите адрес панели `REMNAWAVE_PANEL_URL`, действующий `REMNAWAVE_API_TOKEN` и остальные параметры вашей установки. Не публикуйте `.env`. Если Subpage уже установлен через `remnawave-scripts`, используйте его действующий `.env`, сеть и reverse proxy; в его compose-файле замените только имя образа на `remnadrop/subpage:latest`.
+В `.env` укажите адрес панели `REMNAWAVE_PANEL_URL`, действующий `REMNAWAVE_API_TOKEN` и остальные параметры вашей установки. Панель может быть на другом сервере; в таком случае укажите её доступный HTTPS-адрес. Не публикуйте `.env`. Если Subpage уже установлен через `remnawave-scripts`, используйте его действующий токен и сеть. Обновите маршруты reverse proxy по примеру ниже: прежний маршрут `/UUID` напрямую в панель для этой страницы не нужен.
 
 ```bash
 docker compose -f docker-compose-prod.yml up -d --build --no-deps remnawave-subscription-page
@@ -31,6 +31,19 @@ docker compose -f docker-compose-prod.yml ps remnawave-subscription-page
 ```
 
 Compose-файл предполагает существующую внешнюю сеть `remnawave-network` и порт `127.0.0.1:3010`. При другой схеме установки сохраните текущие сеть, порт и прокси.
+
+### Caddy и панель на другом сервере
+
+Для домена страницы подписки направьте **все пути**, включая `/UUID`, в контейнер страницы:
+
+```caddyfile
+https://sub.example.com {
+    encode zstd gzip
+    reverse_proxy remnawave-subscription-page:3010
+}
+```
+
+Контейнер страницы сам отдаёт браузеру интерфейс, а VPN-клиенту конфигурацию, полученную от панели через `REMNAWAVE_PANEL_URL`. Если старый Caddyfile содержит `rewrite * /sub{uri}` и `reverse_proxy remnawave:3000` для `/UUID`, удалите этот отдельный маршрут. Если он ссылается на прежний контейнер `remnasub-subscription-page`, замените имя на `remnawave-subscription-page`. Caddy и Subpage должны находиться в одной Docker-сети. После правки перезагрузите конфигурацию Caddy без остановки сервера.
 
 ## Много страниц и обновление настроек
 
