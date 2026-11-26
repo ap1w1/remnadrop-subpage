@@ -8,6 +8,7 @@ const { getSafeClientHeaders, SUBSCRIPTION_RESPONSE_HEADERS } = require('../dist
 
 test('only subscription client metadata reaches panel', () => {
     const result = getSafeClientHeaders({
+        accept: 'text/html,application/xhtml+xml',
         'user-agent': 'client',
         'x-hwid': 'device-id',
         cookie: 'session=secret',
@@ -16,7 +17,11 @@ test('only subscription client metadata reaches panel', () => {
         'x-rewrite-url': '/api/users',
         'x-forwarded-host': 'evil.example',
     });
-    assert.deepEqual(result, { 'user-agent': 'client', 'x-hwid': 'device-id' });
+    assert.deepEqual(result, {
+        accept: 'text/html,application/xhtml+xml',
+        'user-agent': 'client',
+        'x-hwid': 'device-id',
+    });
     assert.equal(SUBSCRIPTION_RESPONSE_HEADERS.has('set-cookie'), false);
     assert.equal(SUBSCRIPTION_RESPONSE_HEADERS.has('location'), false);
 });

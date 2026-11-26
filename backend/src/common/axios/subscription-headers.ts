@@ -2,6 +2,7 @@ import type { IncomingHttpHeaders } from 'node:http';
 
 // Only client metadata needed for subscription templates and HWID checks may reach the panel.
 const CLIENT_HEADERS = new Set([
+    'accept',
     'accept-language',
     'user-agent',
     'x-app-version',
