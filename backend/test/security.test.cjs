@@ -5,6 +5,19 @@ const path = require('node:path');
 const ejs = require('ejs');
 const axios = require('axios');
 const { getSafeClientHeaders, SUBSCRIPTION_RESPONSE_HEADERS } = require('../dist/src/common/axios/subscription-headers.js');
+const { isPublicIpv4, BrandLogoService } = require('../dist/src/modules/root/brand-logo.service.js');
+
+test('brand logo proxy rejects local and non-HTTPS sources', async () => {
+    assert.equal(isPublicIpv4('127.0.0.1'), false);
+    assert.equal(isPublicIpv4('10.0.0.5'), false);
+    assert.equal(isPublicIpv4('169.254.169.254'), false);
+    assert.equal(isPublicIpv4('172.20.0.1'), false);
+    assert.equal(isPublicIpv4('192.168.1.1'), false);
+    assert.equal(isPublicIpv4('8.8.8.8'), true);
+    const proxy = new BrandLogoService();
+    assert.equal(await proxy.getImage('http://example.com/logo.png'), null);
+    assert.equal(await proxy.getImage('https://user:password@example.com/logo.png'), null);
+});
 
 test('only subscription client metadata reaches panel', () => {
     const result = getSafeClientHeaders({

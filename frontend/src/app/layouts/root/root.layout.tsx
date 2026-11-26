@@ -3,19 +3,22 @@ import {
     SubscriptionPageRawConfigSchema
 } from '@remnawave/subscription-page-types'
 import { GetSubscriptionInfoByShortUuidCommand } from '@remnawave/backend-contract'
+import { type CSSProperties, useEffect, useLayoutEffect } from 'react'
 import { Outlet } from 'react-router'
-import type { CSSProperties } from 'react'
-import { useLayoutEffect } from 'react'
 import consola from 'consola/browser'
 import { ofetch } from 'ofetch'
 
 import {
+    useAppConfigNullable,
+    useAppConfigStoreActions,
+    useIsConfigLoaded
+} from '@entities/app-config-store'
+import {
     useSubscriptionInfoStoreActions,
     useSubscriptionInfoStoreInfo
 } from '@entities/subscription-info-store'
-import { useAppConfigNullable, useAppConfigStoreActions, useIsConfigLoaded } from '@entities/app-config-store'
-import { LoadingScreen } from '@shared/ui'
 import { parsePageColors } from '@shared/utils/page-colors'
+import { LoadingScreen } from '@shared/ui'
 
 import classes from './root.module.css'
 
@@ -26,7 +29,9 @@ export function RootLayout() {
     const { subscription } = useSubscriptionInfoStoreInfo()
     const isConfigLoaded = useIsConfigLoaded()
     const config = useAppConfigNullable()
-    const pageColors = parsePageColors((config?.brandingSettings as { pageColors?: unknown } | undefined)?.pageColors)
+    const pageColors = parsePageColors(
+        (config?.brandingSettings as undefined | { pageColors?: unknown })?.pageColors
+    )
     const pageStyle = {
         '--page-background': pageColors.background,
         '--page-surface': pageColors.surface,
@@ -47,6 +52,44 @@ export function RootLayout() {
         '--mantine-color-text': pageColors.text
     } as CSSProperties
 
+    useEffect(() => {
+        const logoUrl = config?.brandingSettings.logoUrl
+        const icon = document.getElementById('page-favicon') as HTMLLinkElement | null
+        const image = new Image()
+        if (logoUrl && !logoUrl.includes('docs.rw') && icon) {
+            image.onload = () => {
+                const canvas = document.createElement('canvas')
+                canvas.width = 64
+                canvas.height = 64
+                const context = canvas.getContext('2d')
+                if (!context) return
+
+                const size = Math.min(image.naturalWidth, image.naturalHeight)
+                context.beginPath()
+                context.arc(32, 32, 32, 0, Math.PI * 2)
+                context.clip()
+                context.drawImage(
+                    image,
+                    (image.naturalWidth - size) / 2,
+                    (image.naturalHeight - size) / 2,
+                    size,
+                    size,
+                    0,
+                    0,
+                    64,
+                    64
+                )
+                icon.type = 'image/png'
+                icon.href = canvas.toDataURL('image/png')
+            }
+            image.src = '/assets/brand-logo'
+        }
+
+        return () => {
+            image.onload = null
+        }
+    }, [config?.brandingSettings.logoUrl])
+
     useLayoutEffect(() => {
         const subPageDiv = document.getElementById('sbpg')
 
@@ -55,7 +98,9 @@ export function RootLayout() {
 
             if (subscriptionUrl) {
                 try {
-                    const decoded = Uint8Array.from(atob(subscriptionUrl), (char) => char.charCodeAt(0))
+                    const decoded = Uint8Array.from(atob(subscriptionUrl), (char) =>
+                        char.charCodeAt(0)
+                    )
                     const subscription: GetSubscriptionInfoByShortUuidCommand.Response = JSON.parse(
                         new TextDecoder().decode(decoded)
                     )
@@ -88,7 +133,8 @@ export function RootLayout() {
                     return
                 }
 
-                const rawBranding = (tempConfig as { brandingSettings?: { pageColors?: unknown } })?.brandingSettings
+                const rawBranding = (tempConfig as { brandingSettings?: { pageColors?: unknown } })
+                    ?.brandingSettings
                 Object.assign(parsedConfig.data.brandingSettings, {
                     pageColors: parsePageColors(rawBranding?.pageColors)
                 })

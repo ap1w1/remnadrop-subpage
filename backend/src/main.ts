@@ -130,7 +130,7 @@ async function bootstrap(): Promise<void> {
 
     const customSubPrefix = config.get('CUSTOM_SUB_PREFIX');
 
-    app.setGlobalPrefix(customSubPrefix ?? '', { exclude: [APP_CONFIG_ROUTE_WO_LEADING_PATH] });
+    app.setGlobalPrefix(customSubPrefix ?? '', { exclude: [APP_CONFIG_ROUTE_WO_LEADING_PATH, 'assets/brand-logo'] });
 
     if (customSubPrefix) {
         logger.info('[CONFIG] CUSTOM_SUB_PREFIX: ' + customSubPrefix);

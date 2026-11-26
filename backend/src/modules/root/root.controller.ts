@@ -13,6 +13,7 @@ import { ClientIp } from '@common/decorators/get-ip';
 import { IJwtPayload } from '@common/constants';
 
 import { SubpageConfigService } from './subpage-config.service';
+import { BrandLogoService } from './brand-logo.service';
 import { RootService } from './root.service';
 
 @Controller()
@@ -22,12 +23,24 @@ export class RootController {
     constructor(
         private readonly rootService: RootService,
         private readonly subpageConfigService: SubpageConfigService,
+        private readonly brandLogoService: BrandLogoService,
     ) {}
 
     @Get(APP_CONFIG_ROUTE_WO_LEADING_PATH)
     @Header('Cache-Control', 'private, no-store')
     async getSubscriptionPageConfig(@GetJWTPayload() user: IJwtPayload, @Req() request: Request) {
         return await this.subpageConfigService.getSubscriptionPageConfig(user.su, request);
+    }
+
+    @Get('assets/brand-logo')
+    async getBrandLogo(@GetJWTPayload() user: IJwtPayload, @Res() response: Response) {
+        if (!user?.su) return response.sendStatus(404);
+        const logoUrl = await this.subpageConfigService.getBrandLogoUrl(user.su);
+        if (!logoUrl) return response.sendStatus(404);
+        const image = await this.brandLogoService.getImage(logoUrl);
+        if (!image) return response.sendStatus(404);
+        response.setHeader('Cache-Control', 'private, no-store');
+        response.type(image.contentType).send(image.bytes);
     }
 
     @Get([':shortUuid', ':shortUuid/:clientType'])

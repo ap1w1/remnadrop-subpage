@@ -91,6 +91,14 @@ export class SubpageConfigService {
         return config;
     }
 
+    public async getBrandLogoUrl(encryptedSubpageConfigUuid: string): Promise<string | null> {
+        const uuid = decryptUuid(encryptedSubpageConfigUuid, this.internalJwtSecret);
+        if (!uuid) return null;
+        const config = await this.loadConfig(uuid);
+        const logoUrl = config?.brandingSettings.logoUrl;
+        return logoUrl && !logoUrl.includes('docs.rw') ? logoUrl : null;
+    }
+
     public getEncryptedSubpageConfigUuid(subpageConfigUuidFromRemnawave: string | null): string {
         return encryptUuid(
             this.getFinalSubpageConfigUuid(subpageConfigUuidFromRemnawave),
