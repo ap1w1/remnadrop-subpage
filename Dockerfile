@@ -1,6 +1,7 @@
 FROM node:24.17-trixie-slim AS frontend-build
 WORKDIR /opt/app
 COPY frontend/package*.json ./
+COPY frontend/.npmrc ./
 RUN npm ci
 COPY frontend/ .
 RUN npm run start:build
