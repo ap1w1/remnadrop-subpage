@@ -113,7 +113,9 @@ export const InstallationGuideConnector = (props: IProps) => {
         return firstAvailable!
     })
 
-    const platformApps = platforms[selectedPlatform]!.apps
+    const platformApps = [...platforms[selectedPlatform]!.apps].sort(
+        (first, second) => Number(Boolean(second.featured)) - Number(Boolean(first.featured))
+    )
     const selectedApp = platformApps[selectedAppIndex] ?? platformApps[0]
     const iosInstallButtons = selectedPlatform === 'ios'
         ? (selectedApp?.blocks.find((block) =>
