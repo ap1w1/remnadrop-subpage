@@ -27,29 +27,29 @@
   },
   "dependencies": {
     "@nestjs/axios": "4.0.1",
-    "@nestjs/common": "11.1.27",
+    "@nestjs/common": "11.2.12",
     "@nestjs/config": "4.0.4",
-    "@nestjs/core": "11.1.27",
+    "@nestjs/core": "11.2.12",
     "@nestjs/jwt": "^11.0.2",
-    "@nestjs/platform-express": "11.1.27",
+    "@nestjs/platform-express": "11.2.12",
     "@nestjs/serve-static": "5.0.5",
     "@remnawave/backend-contract": "2.7.2",
     "@remnawave/subscription-page-types": "0.4.0",
-    "axios": "1.18.1",
+    "axios": "1.21.1",
     "class-transformer": "^0.5.1",
-    "compression": "^1.8.1",
+    "compression": "1.8.2",
     "consola": "^3.4.2",
     "cookie-parser": "^1.4.7",
     "dayjs": "^1.11.21",
     "ejs": "6.0.1",
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
-    "morgan": "^1.11.0",
-    "nanoid": "5.1.15",
+    "morgan": "1.12.1",
+    "nanoid": "5.1.16",
     "nest-winston": "^1.10.2",
     "nestjs-zod": "4.3.1",
     "pkg-types": "2.3.1",
-    "proxy-addr": "^2.0.7",
+    "proxy-addr": "2.0.8",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
     "semver": "^7.7.5",
@@ -92,6 +92,6 @@
     "typescript-eslint": "^8.49.0"
   },
   "overrides": {
-    "multer": "2.2.0"
+    "multer": "2.5.0"
   }
 }
