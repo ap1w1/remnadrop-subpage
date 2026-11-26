@@ -1,10 +1,337 @@
-.appsGrid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-.appButton { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; max-width: 100%; padding: 0 12px; overflow: hidden; color: var(--page-text, #e6edf3); background: color-mix(in srgb, var(--page-background, #0d1117) 70%, var(--page-surface, #161b22)); border: 1px solid rgba(255,255,255,.1); border-radius: 10px; cursor: pointer; transition: background .15s ease, border-color .15s ease; }
-.appButton:hover { background: color-mix(in srgb, var(--page-accent, #22c7d9) 8%, var(--page-surface, #161b22)); border-color: color-mix(in srgb, var(--page-accent, #22c7d9) 35%, transparent); }
-.appButton:focus-visible { outline: 2px solid var(--page-accent, #22c7d9); outline-offset: 2px; }
-.appButtonActive, .appButtonActive:hover { background: color-mix(in srgb, var(--page-accent, #22c7d9) 15%, var(--page-surface, #161b22)); border-color: var(--page-accent, #22c7d9); }
-.appButtonActive .appName { color: var(--page-accent, #22c7d9); }
-.bgIcon { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 20px; height: 20px; opacity: .8; }
-.bgIcon svg { width: 100%; height: 100%; }
-.appName { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 650; }
-.featuredBadge { position: absolute; top: 3px; right: 3px; width: 5px; height: 5px; border-radius: 50%; background: #efbf04; }
+.guide {
+    overflow: hidden;
+    background: var(--page-surface, #161b22);
+    border: 1px solid rgb(255, 255, 255, 0.09);
+    box-shadow: 0 18px 50px rgb(0, 0, 0, 0.1);
+}
+
+.guideTop {
+    display: grid;
+    gap: 20px;
+    padding: 24px 26px 22px;
+    background: linear-gradient(
+        115deg,
+        color-mix(in srgb, var(--page-accent, #22c7d9) 8%, transparent),
+        transparent 52%
+    );
+    border-bottom: 1px solid rgb(255, 255, 255, 0.08);
+}
+
+.guideHeading h2 {
+    margin: 2px 0 4px;
+    color: var(--page-text, #f2f5f8);
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.2;
+}
+
+.guideHeading p {
+    margin: 0;
+    color: var(--page-muted, #98a2b3);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.guideEyebrow {
+    color: var(--page-accent, #22c7d9);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+}
+
+.sectionLabel {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--page-muted, #98a2b3);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.platformList {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.platformButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 42px;
+    padding: 8px 14px;
+    color: var(--page-text, #f2f5f8);
+    background: color-mix(
+        in srgb,
+        var(--page-background, #0d1117) 52%,
+        var(--page-surface, #161b22)
+    );
+    border: 1px solid rgb(255, 255, 255, 0.12);
+    border-radius: 11px;
+    font-size: 13px;
+    font-weight: 700;
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.platformButton:hover,
+.appButton:hover {
+    background: color-mix(in srgb, var(--page-accent, #22c7d9) 9%, var(--page-surface, #161b22));
+    transform: translateY(-1px);
+}
+
+.platformButtonActive,
+.platformButtonActive:hover {
+    color: var(--page-accent, #22c7d9);
+    background: color-mix(in srgb, var(--page-accent, #22c7d9) 14%, var(--page-surface, #161b22));
+    border-color: color-mix(in srgb, var(--page-accent, #22c7d9) 65%, transparent);
+}
+
+.platformButton:focus-visible,
+.appButton:focus-visible,
+.regionDetails summary:focus-visible {
+    outline: 2px solid var(--page-accent, #22c7d9);
+    outline-offset: 3px;
+}
+
+.guideBody {
+    padding: 22px 26px 24px;
+}
+
+.appSection {
+    margin-bottom: 22px;
+}
+
+.appsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.appButton {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    min-height: 62px;
+    padding: 10px 13px;
+    color: var(--page-text, #f2f5f8);
+    background: color-mix(
+        in srgb,
+        var(--page-background, #0d1117) 45%,
+        var(--page-surface, #161b22)
+    );
+    border: 1px solid rgb(255, 255, 255, 0.1);
+    border-radius: 14px;
+    text-align: left;
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.appButtonActive,
+.appButtonActive:hover {
+    background: color-mix(in srgb, var(--page-accent, #22c7d9) 10%, var(--page-surface, #161b22));
+    border-color: var(--page-accent, #22c7d9);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--page-accent, #22c7d9) 20%, transparent);
+}
+
+.appIcon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 38px;
+    height: 38px;
+    color: var(--page-accent, #22c7d9);
+    background: color-mix(in srgb, var(--page-accent, #22c7d9) 13%, transparent);
+    border-radius: 11px;
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.appIcon svg {
+    display: block;
+    max-width: 24px;
+    max-height: 24px;
+}
+
+.appName {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.featuredBadge {
+    position: absolute;
+    top: 5px;
+    right: 6px;
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    color: #12161d;
+    background: #f2ba50;
+    border-radius: 50%;
+}
+
+.stepsSection {
+    margin-top: 2px;
+}
+
+.actionGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 2px;
+}
+
+.actionButton {
+    min-height: 40px;
+    padding-inline: 14px;
+    border-color: rgb(255, 255, 255, 0.16);
+    font-weight: 700;
+}
+
+.actionButtonPrimary {
+    color: #07191d;
+    background: var(--page-accent, #22c7d9);
+    border-color: transparent;
+}
+
+.actionButtonPrimary:hover {
+    color: #07191d;
+    background: color-mix(in srgb, var(--page-accent, #22c7d9) 80%, white);
+}
+
+.regionHelp {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: color-mix(in srgb, var(--page-accent, #22c7d9) 6%, var(--page-background, #0d1117));
+    border: 1px solid color-mix(in srgb, var(--page-accent, #22c7d9) 24%, transparent);
+    border-radius: 14px;
+}
+
+.regionIcon {
+    flex: none;
+    color: var(--page-accent, #22c7d9);
+}
+
+.regionContent {
+    min-width: 0;
+    color: var(--page-text, #f2f5f8);
+    font-size: 13px;
+}
+
+.regionContent strong {
+    font-size: 14px;
+}
+
+.regionContent p {
+    margin: 4px 0 0;
+    color: var(--page-muted, #98a2b3);
+    line-height: 1.55;
+}
+
+.regionDetails {
+    margin-top: 10px;
+}
+
+.regionDetails summary {
+    width: fit-content;
+    color: var(--page-accent, #22c7d9);
+    cursor: pointer;
+    font-weight: 750;
+}
+
+.regionDetails ol {
+    display: grid;
+    gap: 7px;
+    margin: 12px 0 8px;
+    padding-left: 19px;
+    line-height: 1.55;
+}
+
+.regionDetails a {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--page-accent, #22c7d9);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+    .guideTop {
+        padding: 20px 17px;
+    }
+
+    .guideBody {
+        padding: 18px 17px 20px;
+    }
+
+    .guideHeading h2 {
+        font-size: 22px;
+    }
+
+    .platformList {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .platformButton {
+        padding-inline: 10px;
+    }
+
+    .platformButton:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+
+    .appsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .appButton {
+        min-height: 58px;
+        padding: 9px;
+        gap: 8px;
+    }
+
+    .appIcon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .appName {
+        font-size: 12px;
+    }
+
+    .actionGrid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .actionButton {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .platformButton,
+    .appButton {
+        transition: none;
+    }
+}

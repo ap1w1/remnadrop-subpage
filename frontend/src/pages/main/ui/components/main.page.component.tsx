@@ -1,5 +1,5 @@
-import { Box, Container, Group, Image, Stack, Title } from '@mantine/core'
 import { TSubscriptionPagePlatformKey } from '@remnawave/subscription-page-types'
+import { Box, Container, Image, Stack } from '@mantine/core'
 
 import {
     AccordionBlockRenderer,
@@ -10,12 +10,14 @@ import {
     SubscriptionLinkWidget,
     TimelineBlockRenderer
 } from '@widgets/main'
-import { useAppConfig, useAppConfigStoreActions, useCurrentLang } from '@entities/app-config-store'
-import { LanguagePicker } from '@shared/ui/language-picker/language-picker.shared'
-import { Page, RemnawaveLogo } from '@shared/ui'
-import { RemnadropExtrasWidget } from '@widgets/main/remnadrop-extras/remnadrop-extras.widget'
 import { RemnadropOverviewWidget } from '@widgets/main/remnadrop-overview/remnadrop-overview.widget'
+import { useAppConfig, useAppConfigStoreActions, useCurrentLang } from '@entities/app-config-store'
+import { RemnadropExtrasWidget } from '@widgets/main/remnadrop-extras/remnadrop-extras.widget'
+import { LanguagePicker } from '@shared/ui/language-picker/language-picker.shared'
 import { parsePageColors } from '@shared/utils/page-colors'
+import { Page, RemnawaveLogo } from '@shared/ui'
+
+import classes from './main.page.module.css'
 
 interface IMainPageComponentProps {
     isMobile: boolean
@@ -35,7 +37,9 @@ export const MainPageComponent = ({ isMobile, platform }: IMainPageComponentProp
     const { setLanguage } = useAppConfigStoreActions()
 
     const brandName = config.brandingSettings.title
-    const accent = parsePageColors((config.brandingSettings as { pageColors?: unknown }).pageColors).accent
+    const { accent } = parsePageColors(
+        (config.brandingSettings as { pageColors?: unknown }).pageColors
+    )
     let hasCustomLogo = !!config.brandingSettings.logoUrl
 
     if (hasCustomLogo) {
@@ -56,45 +60,56 @@ export const MainPageComponent = ({ isMobile, platform }: IMainPageComponentProp
 
     const atLeastOnePlatformApp = Object.values(hasPlatformApps).some((value) => value)
 
+    const brandCaption =
+        (
+            {
+                ru: 'Личный доступ',
+                en: 'Your private access',
+                fr: 'Votre accès privé',
+                zh: '专属访问',
+                fa: 'دسترسی شخصی'
+            } as Record<string, string>
+        )[currentLang] ?? 'Your private access'
+
     return (
         <Page>
-            <Box className="header-wrapper" py="md">
+            <Box className={classes.headerOuter}>
                 <Container maw={860} px={{ base: 'md', sm: 'lg', md: 'xl' }}>
-                    <Group justify="space-between">
-                        <Group gap="sm" style={{ userSelect: 'none' }} wrap="nowrap">
-                            {hasCustomLogo ? (
-                                <Image
-                                    alt="logo"
-                                    fit="contain"
-                                    src={config.brandingSettings.logoUrl}
-                                    style={{
-                                        width: '32px',
-                                        height: '32px',
-                                        flexShrink: 0
-                                    }}
-                                />
-                            ) : (
-                                <RemnawaveLogo c={accent} size={32} />
-                            )}
-                            <Title
-                                c={hasCustomLogo ? 'white' : accent}
-                                fw={700}
-                                order={4}
-                                size="lg"
-                            >
-                                {brandName}
-                            </Title>
-                        </Group>
+                    <header className={classes.header}>
+                        <div aria-hidden="true" className={classes.headerGlow} />
+                        <div className={classes.brand}>
+                            <span className={classes.brandLogo}>
+                                {hasCustomLogo ? (
+                                    <Image
+                                        alt=""
+                                        className={classes.brandImage}
+                                        fit="cover"
+                                        src={config.brandingSettings.logoUrl}
+                                    />
+                                ) : (
+                                    <RemnawaveLogo c={accent} size={32} />
+                                )}
+                            </span>
+                            <span className={classes.brandCopy}>
+                                <span className={classes.brandCaption}>{brandCaption}</span>
+                                <span className={classes.brandName}>{brandName}</span>
+                            </span>
+                        </div>
 
-                        <Group gap="sm" wrap="nowrap">
-                            {config.uiConfig.subscriptionInfoBlockType === 'hidden' && <SubscriptionLinkWidget hideGetLink={config.baseSettings.hideGetLinkButton} mode="icon" />}
+                        <div className={classes.headerActions}>
+                            {config.uiConfig.subscriptionInfoBlockType === 'hidden' && (
+                                <SubscriptionLinkWidget
+                                    hideGetLink={config.baseSettings.hideGetLinkButton}
+                                    mode="icon"
+                                />
+                            )}
                             <LanguagePicker
                                 currentLang={currentLang}
                                 locales={config.locales}
                                 onLanguageChange={setLanguage}
                             />
-                        </Group>
-                    </Group>
+                        </div>
+                    </header>
                 </Container>
             </Box>
 
@@ -107,8 +122,8 @@ export const MainPageComponent = ({ isMobile, platform }: IMainPageComponentProp
                 <Stack gap="lg">
                     {config.uiConfig.subscriptionInfoBlockType !== 'hidden' && (
                         <RemnadropOverviewWidget
-                            variant={config.uiConfig.subscriptionInfoBlockType}
                             hideGetLink={config.baseSettings.hideGetLinkButton}
+                            variant={config.uiConfig.subscriptionInfoBlockType}
                         />
                     )}
 
@@ -126,7 +141,6 @@ export const MainPageComponent = ({ isMobile, platform }: IMainPageComponentProp
                     )}
 
                     <RawKeysWidget isMobile={isMobile} />
-
                 </Stack>
             </Container>
         </Page>
